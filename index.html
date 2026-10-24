@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Huye del Asesino</title>
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3.55.2/dist/phaser.js"></script>
+    <style>
+        body {margin: 0;background: #111;display: flex;justify-content: center;align-items:center;height: 100vh;color: white;font-family: sans-serif;}
+    </style>
+</head>
+
+<script>
+class NivelPersecucion extends Phaser.Scene {
+    constructor () {
+        super ('NivelPersecucion');
+}
+
+preload (){
+    this.load.image('player', 'https://labs.phaser.io/assets/sprites/phaser-dude.png');
+    this.load.image('killer', 'https://labs.phaser.io/assets/sprites/baddie.png');
+}
+create () {
+    this.player =this.physics.add.sprite(400, 300, 'player');
+    this.player.setCollideWorldBounds(true);
+
+    this.killer =this.physics.add.sprite(100, 100, 'killer');
+    this.killer.setCollideWorldBounds(true);
+
+    this.cursors =this.input.keyboard.createCursorKeys();
+    this.wasd =this.input.keyboard.addKeys({
+        up: Phaser.Input.Keyboard.KeyCodes.W,
+        down: Phaser.Input.Keyboard.KeyCodes.S,
+        left: Phaser.Input.Keyboard.KeyCodes.A,
+        right: Phaser.Input.Keyboard.KeyCodes.D
+    });
+
+    this.physics.add.overlap(this.player, this.killer, this.atrapado, null, this);
+}
+
+update(){
+    this.player.setVelocity(0);
+
+    if(this.cursors.left.isDown || this.wasd.left.isDown) {
+        this.player.setVelocityX(-200);
+    } else if (this.cursors.right.isDown || this.wasd.left.Down){
+        this.player.setVelocityX(200);
+    }
+    if (this.cursors.up.isDown || this.wasd.up.isDown) {
+        this.player.setVelocityY(-200);
+    } else if (this.cursors.down.isDown || this.wasd.down.isDown) {
+        this.player.setVelocityY(200);
+    }
+
+    this.physics.moveToObject(this.killer, this.player, 100);
+    }
+
+atrapado(player, killer) {
+    alert("¡Te Corto la Oreja! Pantalla en negro...")
+    this.scene.restart();
+    }
+}
+const config = {
+    type: Phaser.AUTO,
+    width: 800,
+    height: 600,
+    physics: {
+        default: 'arcade',
+        arcade: { gravity:{ y:0},debug: false }
+    },
+    scene: NivelPersecucion
+};
+const game = new Phaser.Game(config);
+</script>
+
+</body>
+</html>
